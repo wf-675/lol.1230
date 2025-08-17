@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Au23dd2 Menu - HTML Controlled</title>
+    <title>a2 Menu - HTML Controlled</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -105,7 +105,7 @@
             self: {
                 title: 'SELF OPTIONS',
                 items: [
-                    { name: "Enable Fast11 Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
+                    { name: "Enable Fast234y Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
                     { name: "Enable Noclip", icon: '<i class="fa-solid fa-ghost"></i>', type: "toggle", action: "noclip_toggle", state: false },
                     { name: "Enable Godmode", icon: '<i class="fa-solid fa-shield-halved"></i>', type: "toggle", action: "godmode_toggle", state: false },
                     { name: "Heal Player", icon: '<i class="fa-solid fa-heart-pulse"></i>', type: "action", action: "heal_player" },
@@ -150,7 +150,6 @@
         // ===================================
         // Macho DUI Communication Functions (using MachoLuaInterface)
         // ===================================
-
         function sendMachoMessage(type, action, name, state, key) {
             if (window.MachoLuaInterface) {
                 if (type === 'toggle') {
@@ -386,6 +385,12 @@
                     if (selfMenu[i].action === 'fastrun_toggle') {
                         selfMenu[i].state = data.initialFastRunState;
                     }
+                     if (selfMenu[i].action === 'noclip_toggle') {
+                        selfMenu[i].state = data.initialNoclipState;
+                    }
+                     if (selfMenu[i].action === 'godmode_toggle') {
+                        selfMenu[i].state = data.initialGodmodeState;
+                    }
                 }
                 
                 renderMenu(currentMenuType);
@@ -500,4 +505,3 @@
     </script>
 </body>
 </html>
-
