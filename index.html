@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>a2 Menu - HTML Controlled</title>
+    <title>Auu Menu - HTML Controlled</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -105,7 +105,7 @@
             self: {
                 title: 'SELF OPTIONS',
                 items: [
-                    { name: "Enable Fast234y Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
+                    { name: "Enable Fast Ru123n", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
                     { name: "Enable Noclip", icon: '<i class="fa-solid fa-ghost"></i>', type: "toggle", action: "noclip_toggle", state: false },
                     { name: "Enable Godmode", icon: '<i class="fa-solid fa-shield-halved"></i>', type: "toggle", action: "godmode_toggle", state: false },
                     { name: "Heal Player", icon: '<i class="fa-solid fa-heart-pulse"></i>', type: "action", action: "heal_player" },
@@ -136,31 +136,12 @@
         };
 
         // ===================================
-        // NEW: Advanced Debugger to send JS logs to Lua (F8 Console)
-        // ===================================
-        function sendNuiDebugMessage(type, message, data = {}) {
-            // Macho DUI doesn't support fetch to localhost, this is for NUI only.
-            // We will rely on Macho's own `MachoLuaInterface` for debugging messages,
-            // which is injected by the Lua script.
-        }
-
-        // We will NOT override console functions here to avoid errors and unnecessary calls.
-        // The Lua side already handles this with MachoExecuteDuiScript.
-
-        // ===================================
-        // Macho DUI Communication Functions (using MachoLuaInterface)
+        // Macho DUI Communication Functions (No JSON)
         // ===================================
         function sendMachoMessage(type, action, name, state, key) {
             if (window.MachoLuaInterface) {
-                if (type === 'toggle') {
-                    window.MachoLuaInterface.handleToggleAction(action, name, state);
-                } else if (type === 'menu') {
-                    window.MachoLuaInterface.handleMenuSelection(action, name);
-                } else if (type === 'hide_menu') {
-                    window.MachoLuaInterface.hideMenu();
-                } else if (type === 'update_state') {
-                    window.MachoLuaInterface.updateCurrentState(currentMenuType, name);
-                }
+                let message = `${type},${action},${name},${state}`;
+                window.MachoLuaInterface.handleAction(message);
             } else {
                 console.error("MachoLuaInterface not available. Communication with Lua failed.");
             }
@@ -170,7 +151,7 @@
         // وظائف التعامل مع القائمة
         // ===================================
 
-        function renderMenu(menuKey) {
+        function renderMenu(menuKey, initialFastRunState) {
             console.log(`[HTML] Rendering menu: ${menuKey}`);
             const menu = menuData[menuKey];
             if (!menu) {
@@ -191,6 +172,18 @@
                 const menuItemElement = createMenuItem(item, index);
                 menuItemsContainer.appendChild(menuItemElement);
             });
+
+            // Update initial state for toggle switches
+            const selfMenu = menuData.self.items;
+            for (let i = 0; i < selfMenu.length; i++) {
+                if (selfMenu[i].action === 'fastrun_toggle' && initialFastRunState !== undefined) {
+                    selfMenu[i].state = initialFastRunState;
+                    const toggleSwitch = menuItemsContainer.querySelector(`.toggle-switch[data-action="${selfMenu[i].action}"]`);
+                    if (toggleSwitch) {
+                        toggleSwitch.classList.toggle('on', initialFastRunState);
+                    }
+                }
+            }
 
             currentIndex = 0;
             updateSelection();
@@ -250,8 +243,6 @@
                 updateCounter();
                 scrollIntoView(items[currentIndex]);
                 console.log(`[HTML] Selection updated to index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
-                // Now we update the state in Lua using the Macho interface
-                sendMachoMessage('update_state', null, getCurrentMenuItemName(), null);
             } catch (e) {
                 console.error(`[HTML] Error in updateSelection:`, e);
             }
@@ -305,7 +296,6 @@
                 if (selectedElement.classList.contains('back-arrow-item')) {
                     return { type: "back", name: "Back" };
                 } else {
-                    // Adjust for 'Back' button if it exists in the current menu and currentIndex > 0
                     const actualIndex = (currentMenuType !== 'main' && items.some(el => el.classList.contains('back-arrow-item')) && currentIndex > 0) 
                                         ? currentIndex - 1 
                                         : currentIndex;
@@ -367,41 +357,41 @@
 
         // استقبال الرسائل من Lua
         window.addEventListener('message', function(event) {
-            const data = event.data;
-            console.log("[HTML] Received message from Lua:", data);
+            const dataString = event.data;
+            console.log("[HTML] Received message from Lua:", dataString);
             
-            if (data.type === "showMenu") {
+            const parts = dataString.split(',');
+            const type = parts[0];
+            
+            if (type === "showMenu") {
                 menuContainer.classList.remove('hidden');
                 isMenuVisible = true;
                 menuContainer.focus();
                 
-                if (data.initialTab && menuData[data.initialTab]) {
-                    currentMenuType = data.initialTab;
+                const initialTab = parts[1];
+                const initialFastRunState = parts[2] === "true";
+
+                if (initialTab && menuData[initialTab]) {
+                    currentMenuType = initialTab;
                 }
                 
-                // Update toggle states based on initial data from Lua (e.g., fastRunActive)
                 const selfMenu = menuData.self.items;
                 for (let i = 0; i < selfMenu.length; i++) {
                     if (selfMenu[i].action === 'fastrun_toggle') {
-                        selfMenu[i].state = data.initialFastRunState;
-                    }
-                     if (selfMenu[i].action === 'noclip_toggle') {
-                        selfMenu[i].state = data.initialNoclipState;
-                    }
-                     if (selfMenu[i].action === 'godmode_toggle') {
-                        selfMenu[i].state = data.initialGodmodeState;
+                        selfMenu[i].state = initialFastRunState;
                     }
                 }
                 
-                renderMenu(currentMenuType);
+                renderMenu(currentMenuType, initialFastRunState);
                 
-            } else if (data.type === "hideMenu") {
+            } else if (type === "hideMenu") {
                 menuContainer.classList.add('hidden');
                 isMenuVisible = false;
                 console.log("[HTML] Menu hidden.");
-            } else if (data.type === "keyPressed" && isMenuVisible) {
-                console.log(`[HTML] Key pressed event: ${data.key}`);
-                handleKeyPress(data.key);
+            } else if (type === "keyPressed" && isMenuVisible) {
+                const key = parts[1];
+                console.log(`[HTML] Key pressed event: ${key}`);
+                handleKeyPress(key);
             }
         });
 
