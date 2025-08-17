@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Au3a2 Menu - HTML Controlled</title>
+    <title>Au5gvgfds2 Menu - HTML Controlled</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -104,7 +104,7 @@
             self: {
                 title: 'SELF OPTIONS',
                 items: [
-                    { name: "Enable Fast Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
+                    { name: "Enable Fasgt gtRun", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
                     { name: "Enable Noclip", icon: '<i class="fa-solid fa-ghost"></i>', type: "toggle", action: "noclip_toggle", state: false },
                     { name: "Enable Godmode", icon: '<i class="fa-solid fa-shield-halved"></i>', type: "toggle", action: "godmode_toggle", state: false },
                     { name: "Heal Player", icon: '<i class="fa-solid fa-heart-pulse"></i>', type: "action", action: "heal_player" },
@@ -134,16 +134,9 @@
             settings: { title: 'SETTINGS', items: [] }
         };
 
-        // Debug logging to Lua
+        // Debug logging
         function sendDebugMessage(type, message, data = {}) {
             console.log(`[JS-DEBUG-${type.toUpperCase()}] ${message}`, data);
-            // Optional: Send debug messages to Lua if needed
-            const resourceName = 'macho_v2';
-            fetch(`https://${resourceName}/debug`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                body: JSON.stringify({ type, message, data: JSON.stringify(data) })
-            }).catch(error => console.error(`[JS-DEBUG-ERROR] Failed to send debug: ${error}`));
         }
 
         // Macho Lua Interface
@@ -191,7 +184,7 @@
                     window.pendingLuaAction = null; // Clear after retrieval
                     return JSON.stringify(action);
                 }
-                return null;
+                return '{}';
             }
         };
 
@@ -408,6 +401,17 @@
             } else if (data.type === "keyPressed" && isMenuVisible) {
                 sendDebugMessage('info', `Key pressed event: ${data.key}`);
                 handleKeyPress(data.key);
+            } else if (data.type === "actionConfirmation") {
+                sendDebugMessage('info', `Action confirmation received: ${data.action}, State: ${data.state}`);
+                // Update toggle state if needed
+                const item = menuData[currentMenuType].items.find(i => i.action === data.action);
+                if (item) {
+                    item.state = data.state;
+                    const toggleSwitch = document.querySelector(`.toggle-switch[data-action="${data.action}"]`);
+                    if (toggleSwitch) {
+                        toggleSwitch.classList.toggle('on', data.state);
+                    }
+                }
             }
         });
 
