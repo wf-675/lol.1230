@@ -3,13 +3,15 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>uossa - Macho DUI Controlled</title>
+    <title>koav</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Your existing CSS here */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
         html, body { width: 100%; height: 100%; background-color: transparent !important; overflow: hidden; font-family: 'Roboto', sans-serif; display: flex; justify-content: center; align-items: center; }
         .menu-container { width: 387px; height: 520px; background: rgba(0, 0, 0, 0.6); border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 0, 0.08); overflow: hidden; position: relative; display: flex; flex-direction: column; opacity: 1; outline: none; }
+        .menu-container.hidden { display: none !important; }
         .menu-header { height: 137px; background: linear-gradient(135deg, rgba(255, 255, 0, 0.95) 0%, rgba(200, 200, 0, 0.95) 100%); position: relative; background-size: cover; background-position: center top; background-repeat: no-repeat; border-top-left-radius: 7px; border-top-right-radius: 7px; box-shadow: inset 0 -2px 6px rgba(255, 255, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.2); }
         .header-home-text { position: absolute; bottom: 0; left: 0; right: 0; background: #000000; color: #ffffff; font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; text-align: center; padding: 8px; border-radius: 0; box-shadow: none; }
         .menu-items { padding: 4px 0; height: calc(100% - 137px - 32px); overflow-y: scroll; position: relative; display: flex; flex-direction: column; }
@@ -47,8 +49,6 @@
         .notification-message { font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 500; color: #d1d5db; text-shadow: none; }
         .notification-timer { width: 100%; height: 2px; background: rgb(255, 255, 0); position: absolute; bottom: 0; left: 0; animation: timerProgress 4s linear forwards; border-radius: 0 0 8px 8px; }
         @keyframes timerProgress { 0% { width: 100%; } 100% { width: 0; } }
-        .menu-container.hidden { display: none !important; }
-        .feature-hint { position: fixed; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.8); color: rgb(255, 255, 0); padding: 10px 15px; border-radius: 5px; font-size: 12px; font-weight: 500; z-index: 1001; }
     </style>
 </head>
 <body>
@@ -62,15 +62,12 @@
         </div>
 
         <div class="menu-footer">
-            <span class="version">Version: Macho DUI | Ready</span>
+            <span class="version">Version: HTML Controlled | 24hrs ago</span>
             <span class="counter" id="counter">1/9</span>
         </div>
     </div>
 
     <div class="notification-container" id="notificationContainer"></div>
-    <div class="feature-hint" id="featureHint" style="display: none;">
-        Press Ctrl+F for Fast Run, Ctrl+N for Noclip
-    </div>
 
     <script>
         const bannerImageUrl = 'https://media.discordapp.net/attachments/1385473748068728922/1385879507289899148/Untitled12_20250621101005.png?ex=6857ac5e&is=68565ade&hm=d6b1c32143168757f493fcfe79cb7dad4849f8b56e7ca841ad23888219fe491e&=&format=webp&quality=lossless';
@@ -87,7 +84,6 @@
         const counterElement = document.getElementById('counter');
         const notificationContainer = document.getElementById('notificationContainer');
         const menuHeader = document.getElementById('menuHeader');
-        const featureHint = document.getElementById('featureHint');
 
         menuHeader.style.backgroundImage = `url(${bannerImageUrl})`;
 
@@ -99,7 +95,7 @@
                     { name: "Online Options", icon: '<i class="fa-solid fa-desktop"></i>', type: "submenu", target: "online" },
                     { name: "Combat/Weapons", icon: '<i class="fa-solid fa-crosshairs"></i>', type: "submenu", target: "combat" },
                     { name: "Visual Options", icon: '<i class="fa-solid fa-eye"></i>', type: "submenu", target: "visual" },
-                    { name: "Vehicle Options", icon: '<i class="fa-solid fa-car"></i>', type: "submenu", target: "vehicle" },
+                    { name: "V1ehi12cle Options", icon: '<i class="fa-solid fa-car"></i>', type: "submenu", target: "vehicle" },
                     { name: "Miscellaneous", icon: '<i class="fa-solid fa-folder-open"></i>', type: "submenu", target: "misc" },
                     { name: "Destructive Tools", icon: '<i class="fa-solid fa-bomb"></i>', type: "submenu", target: "destructive" },
                     { name: "Event Triggers", icon: '<i class="fa-solid fa-bolt"></i>', type: "submenu", target: "triggers" },
@@ -111,6 +107,7 @@
                 items: [
                     { name: "Enable Fast Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
                     { name: "Enable Noclip", icon: '<i class="fa-solid fa-ghost"></i>', type: "toggle", action: "noclip_toggle", state: false },
+                    { name: "Enable Godmode", icon: '<i class="fa-solid fa-shield-halved"></i>', type: "toggle", action: "godmode_toggle", state: false },
                     { name: "Heal Player", icon: '<i class="fa-solid fa-heart-pulse"></i>', type: "action", action: "heal_player" },
                     { name: "Clean Player", icon: '<i class="fa-solid fa-broom"></i>', type: "action", action: "clean_player" }
                 ]
@@ -138,37 +135,35 @@
             settings: { title: 'SETTINGS', items: [] }
         };
 
-        // Communication with Lua via keyboard shortcuts (Macho DUI workaround)
-        function sendLuaCommand(type, data) {
-            console.log(`[HTML] Macho DUI Command: ${type}`, data);
-            
-            if (type === 'toggleAction') {
-                if (data.action === 'fastrun_toggle') {
-                    window.luaCommand = { action: 'fastrun_toggle', state: data.state, timestamp: Date.now() };
-                    showNotification("Fast Run", `Press Ctrl+F to ${data.state ? 'enable' : 'disable'} Fast Run`, "info", 3000);
-                    showFeatureHint();
-                } else if (data.action === 'noclip_toggle') {
-                    window.luaCommand = { action: 'noclip_toggle', state: data.state, timestamp: Date.now() };
-                    showNotification("Noclip", `Press Ctrl+N to ${data.state ? 'enable' : 'disable'} Noclip`, "info", 3000);
-                    showFeatureHint();
-                }
-            } else if (type === 'menuSelected') {
-                if (data.action === 'heal_player') {
-                    showNotification("Heal", "Feature coming soon", "info");
-                } else if (data.action === 'clean_player') {
-                    showNotification("Clean", "Feature coming soon", "info");
-                }
-            } else if (type === 'hideMenu') {
-                // Will be handled by Lua
+        // ===================================
+        // وظائف التواصل مع Lua (لـ Macho DUI)
+        // ===================================
+        // هذا المتغير العالمي سيتم استطلاع قيمته من Lua
+        window.lastLuaMessage = '';
+
+        // هذه الدالة الجديدة ترسل الرسالة إلى Lua عن طريق تحديث المتغير window.lastLuaMessage
+        function postLuaMessage(action, data = {}) {
+            console.log(`[HTML] Attempting to send message to Macho Lua: Action: ${action}, Data:`, data);
+            window.lastLuaMessage = JSON.stringify({ type: 'fromHTML', action: action, data: data });
+        }
+
+        // إرسال حالة التاب الحالي إلى Lua
+        function updateLuaCurrentState() {
+            try {
+                const currentItemName = getCurrentMenuItemName();
+                console.log(`[HTML] Preparing to update Lua state: Tab = ${currentMenuType}, Option = ${currentItemName}`);
+                postLuaMessage('updateCurrentState', {
+                    tab: currentMenuType,
+                    option: currentItemName
+                });
+            } catch (e) {
+                console.error(`[HTML] Error in updateLuaCurrentState:`, e);
             }
         }
 
-        function showFeatureHint() {
-            featureHint.style.display = 'block';
-            setTimeout(() => {
-                featureHint.style.display = 'none';
-            }, 5000);
-        }
+        // ===================================
+        // وظائف التعامل مع القائمة
+        // ===================================
 
         function renderMenu(menuKey) {
             console.log(`[HTML] Rendering menu: ${menuKey}`);
@@ -194,8 +189,8 @@
 
             currentIndex = 0;
             updateSelection();
-            updateCounter();
             updateHighlightBar();
+            updateCounter();
         }
 
         function createMenuItem(item, index) {
@@ -222,7 +217,7 @@
                     console.log(`[HTML] Clicked toggle item: ${item.name}`);
                     toggleOption(item, element.querySelector('.toggle-switch'));
                 });
-            } else {
+            } else { // Submenu or action
                 element.innerHTML = `
                     <div class="icon">${item.icon}</div>
                     <div class="text">${item.name}</div>
@@ -238,12 +233,7 @@
 
         function updateSelection() {
             try {
-                const items = Array.from(menuItemsContainer.children).filter(el => 
-                    el.classList.contains('menu-item') || 
-                    el.classList.contains('toggle-item') || 
-                    el.classList.contains('back-arrow-item')
-                );
-                
+                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
                 items.forEach((item, index) => {
                     if (index === currentIndex) {
                         item.classList.add('selected');
@@ -251,12 +241,11 @@
                         item.classList.remove('selected');
                     }
                 });
-                
                 updateHighlightBar();
                 updateCounter();
                 scrollIntoView(items[currentIndex]);
-                
-                console.log(`[HTML] Selection updated to index: ${currentIndex}`);
+                console.log(`[HTML] Selection updated to index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
+                updateLuaCurrentState(); // This is a crucial call to tell Lua the current selected item
             } catch (e) {
                 console.error(`[HTML] Error in updateSelection:`, e);
             }
@@ -270,11 +259,7 @@
         }
 
         function updateCounter() {
-            const totalItems = Array.from(menuItemsContainer.children).filter(el => 
-                el.classList.contains('menu-item') || 
-                el.classList.contains('toggle-item') || 
-                el.classList.contains('back-arrow-item')
-            ).length;
+            const totalItems = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item')).length;
             counterElement.textContent = `${currentIndex + 1}/${totalItems}`;
         }
 
@@ -291,6 +276,55 @@
             }
         }
 
+        function getCurrentMenuItem() {
+            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+            return items[currentIndex];
+        }
+
+        function getCurrentMenuItemData() {
+            try {
+                const menu = menuData[currentMenuType];
+                if (!menu || !menu.items) {
+                    console.error("[HTML] getCurrentMenuItemData: menuData or menu.items is undefined for type:", currentMenuType);
+                    return null;
+                }
+                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+                const selectedElement = items[currentIndex];
+
+                if (!selectedElement) {
+                    console.warn("[HTML] getCurrentMenuItemData: No selected element at current index:", currentIndex);
+                    return null;
+                }
+
+                if (selectedElement.classList.contains('back-arrow-item')) {
+                    return { type: "back", name: "Back" };
+                } else {
+                    const actualIndex = (currentMenuType !== 'main' && items.some(el => el.classList.contains('back-arrow-item')) && currentIndex > 0) 
+                                      ? currentIndex - 1 
+                                      : currentIndex;
+                    
+                    if (actualIndex >= 0 && actualIndex < menu.items.length) {
+                        return menu.items[actualIndex];
+                    } else {
+                        console.error(`[HTML] getCurrentMenuItemData: Invalid actualIndex ${actualIndex} for menu type ${currentMenuType}. Menu items length: ${menu.items.length}`);
+                        return null;
+                    }
+                }
+            } catch (e) {
+                console.error(`[HTML] Error in getCurrentMenuItemData:`, e);
+                return null;
+            }
+        }
+
+        function getCurrentMenuItemName() {
+            const item = getCurrentMenuItemData();
+            return item ? item.name : "None";
+        }
+
+        // ===================================
+        // معالجة الأحداث (النقر، لوحة المفاتيح)
+        // ===================================
+
         function selectOption(item) {
             if (item.type === "submenu") {
                 console.log(`[HTML] Navigating to submenu: ${item.target}`);
@@ -299,8 +333,9 @@
                 renderMenu(currentMenuType);
             } else if (item.type === "action") {
                 console.log(`[HTML] Executing action: ${item.action}`);
-                sendLuaCommand('menuSelected', { action: item.action, name: item.name });
+                postLuaMessage('menuSelected', { action: item.action, name: item.name });
                 showNotification("Action Executed", `${item.name} activated!`, "info");
+                updateLuaCurrentState();
             }
         }
 
@@ -309,13 +344,13 @@
             toggleSwitchElement.classList.toggle('on', item.state);
 
             console.log(`[HTML] Toggling option: ${item.name}, New state: ${item.state}`);
-            sendLuaCommand('toggleAction', {
+            postLuaMessage('toggleAction', {
                 action: item.action,
                 name: item.name,
                 state: item.state
             });
-            
             showNotification(item.name, `${item.name} ${item.state ? 'Enabled' : 'Disabled'}`, item.state ? "success" : "error");
+            updateLuaCurrentState();
         }
 
         function goBack() {
@@ -325,17 +360,44 @@
                 renderMenu(currentMenuType);
             } else {
                 console.log("[HTML] No history to go back. Hiding menu.");
-                sendLuaCommand('hideMenu');
+                postLuaMessage('hideMenu');
             }
         }
 
+        // استقبال الرسائل من Lua
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (typeof data !== 'object' || data === null) {
+                console.error("[HTML] Received invalid message type from Lua. Expected object, got:", typeof data);
+                return;
+            }
+            console.log("[HTML] Received message from Lua:", data);
+
+            if (data.type === "showMenu") {
+                menuContainer.classList.remove('hidden');
+                isMenuVisible = true;
+                menuContainer.focus();
+
+                if (data.initialTab && menuData[data.initialTab]) {
+                    currentMenuType = data.initialTab;
+                    console.log(`[HTML] Initial tab set from Lua: ${currentMenuType}`);
+                } else {
+                    console.log(`[HTML] No initial tab from Lua, using default: ${currentMenuType}`);
+                }
+                renderMenu(currentMenuType);
+            } else if (data.type === "hideMenu") {
+                menuContainer.classList.add('hidden');
+                isMenuVisible = false;
+                console.log("[HTML] Menu hidden.");
+            } else if (data.type === "keyPressed" && isMenuVisible) {
+                console.log(`[HTML] Key pressed event: ${data.key}`);
+                handleKeyPress(data.key);
+            }
+        });
+
         function handleKeyPress(key) {
             try {
-                const items = Array.from(menuItemsContainer.children).filter(el => 
-                    el.classList.contains('menu-item') || 
-                    el.classList.contains('toggle-item') || 
-                    el.classList.contains('back-arrow-item')
-                );
+                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
                 const totalItems = items.length;
 
                 if (totalItems === 0) {
@@ -350,9 +412,9 @@
                     currentIndex = (currentIndex + 1) % totalItems;
                     console.log(`[HTML] ArrowDown - New index: ${currentIndex}`);
                 } else if (key === "Enter") {
-                    const selectedItemElement = items[currentIndex];
+                    const selectedItemElement = getCurrentMenuItem();
                     if (selectedItemElement) {
-                        console.log(`[HTML] Enter key pressed`);
+                        console.log(`[HTML] Enter key pressed on: ${getCurrentMenuItemName()}`);
                         selectedItemElement.click();
                     }
                 } else if (key === "Backspace") {
@@ -369,17 +431,13 @@
             try {
                 const itemElement = event.target.closest('.menu-item, .toggle-item, .back-arrow-item');
                 if (itemElement) {
-                    const allItems = Array.from(menuItemsContainer.children).filter(el => 
-                        el.classList.contains('menu-item') || 
-                        el.classList.contains('toggle-item') || 
-                        el.classList.contains('back-arrow-item')
-                    );
+                    const allItems = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
                     const clickedIndex = allItems.indexOf(itemElement);
                     
                     if (clickedIndex !== -1 && clickedIndex !== currentIndex) {
                         currentIndex = clickedIndex;
                         updateSelection();
-                        console.log(`[HTML] Mouseover - New index: ${currentIndex}`);
+                        console.log(`[HTML] Mouseover - New index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
                     }
                 }
             } catch (e) {
@@ -387,6 +445,9 @@
             }
         });
 
+        // ===================================
+        // نظام الإشعارات (Notifications)
+        // ===================================
         function showNotification(title, message, type = "info", duration = 4000) {
             const notification = document.createElement('div');
             notification.classList.add('notification');
@@ -425,38 +486,11 @@
             }, duration - 250);
         }
 
-        // Global functions for Macho DUI communication
-        window.showMenu = function(data) {
-            console.log("[HTML] Received showMenu from Lua:", data);
-            menuContainer.classList.remove('hidden');
-            isMenuVisible = true;
-            menuContainer.focus();
-
-            if (data && data.initialTab && menuData[data.initialTab]) {
-                currentMenuType = data.initialTab;
-                console.log(`[HTML] Initial tab set from Lua: ${currentMenuType}`);
-            } else {
-                console.log(`[HTML] No initial tab from Lua, using default: ${currentMenuType}`);
-            }
-            renderMenu(currentMenuType);
-        };
-
-        window.hideMenu = function() {
-            console.log("[HTML] Received hideMenu from Lua");
-            menuContainer.classList.add('hidden');
-            isMenuVisible = false;
-            featureHint.style.display = 'none';
-        };
-
-        window.handleKeyPress = handleKeyPress;
-
-        // Initialize menu on page load
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("[HTML] DOMContentLoaded. Initializing Macho DUI menu.");
+            console.log("[HTML] DOMContentLoaded. Initializing menu.");
             renderMenu(currentMenuType);
+            updateLuaCurrentState();
         });
-
-        console.log("[HTML] Macho DUI Menu initialized and ready for communication.");
     </script>
 </body>
 </html>
