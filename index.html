@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>koav</title>
+    <title>Aura2 Menu - HTML Controlled</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -95,7 +95,7 @@
                     { name: "Online Options", icon: '<i class="fa-solid fa-desktop"></i>', type: "submenu", target: "online" },
                     { name: "Combat/Weapons", icon: '<i class="fa-solid fa-crosshairs"></i>', type: "submenu", target: "combat" },
                     { name: "Visual Options", icon: '<i class="fa-solid fa-eye"></i>', type: "submenu", target: "visual" },
-                    { name: "V1ehi12cle Options", icon: '<i class="fa-solid fa-car"></i>', type: "submenu", target: "vehicle" },
+                    { name: "Vehicle Opt1io32ns", icon: '<i class="fa-solid fa-car"></i>', type: "submenu", target: "vehicle" },
                     { name: "Miscellaneous", icon: '<i class="fa-solid fa-folder-open"></i>', type: "submenu", target: "misc" },
                     { name: "Destructive Tools", icon: '<i class="fa-solid fa-bomb"></i>', type: "submenu", target: "destructive" },
                     { name: "Event Triggers", icon: '<i class="fa-solid fa-bolt"></i>', type: "submenu", target: "triggers" },
@@ -345,7 +345,7 @@
 
             console.log(`[HTML] Toggling option: ${item.name}, New state: ${item.state}`);
             postLuaMessage('toggleAction', {
-                action: item.action,
+                action: item.action, // تم تعديل هذا السطر
                 name: item.name,
                 state: item.state
             });
