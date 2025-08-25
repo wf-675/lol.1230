@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Au1sdaa2 Menu - Macho DUI Controlled</title>
+    <title>uossa - Macho DUI Controlled</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -48,6 +48,7 @@
         .notification-timer { width: 100%; height: 2px; background: rgb(255, 255, 0); position: absolute; bottom: 0; left: 0; animation: timerProgress 4s linear forwards; border-radius: 0 0 8px 8px; }
         @keyframes timerProgress { 0% { width: 100%; } 100% { width: 0; } }
         .menu-container.hidden { display: none !important; }
+        .feature-hint { position: fixed; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.8); color: rgb(255, 255, 0); padding: 10px 15px; border-radius: 5px; font-size: 12px; font-weight: 500; z-index: 1001; }
     </style>
 </head>
 <body>
@@ -61,12 +62,15 @@
         </div>
 
         <div class="menu-footer">
-            <span class="version">Version: Macho DUI | 24hrs ago</span>
+            <span class="version">Version: Macho DUI | Ready</span>
             <span class="counter" id="counter">1/9</span>
         </div>
     </div>
 
     <div class="notification-container" id="notificationContainer"></div>
+    <div class="feature-hint" id="featureHint" style="display: none;">
+        Press Ctrl+F for Fast Run, Ctrl+N for Noclip
+    </div>
 
     <script>
         const bannerImageUrl = 'https://media.discordapp.net/attachments/1385473748068728922/1385879507289899148/Untitled12_20250621101005.png?ex=6857ac5e&is=68565ade&hm=d6b1c32143168757f493fcfe79cb7dad4849f8b56e7ca841ad23888219fe491e&=&format=webp&quality=lossless';
@@ -83,16 +87,9 @@
         const counterElement = document.getElementById('counter');
         const notificationContainer = document.getElementById('notificationContainer');
         const menuHeader = document.getElementById('menuHeader');
+        const featureHint = document.getElementById('featureHint');
 
         menuHeader.style.backgroundImage = `url(${bannerImageUrl})`;
-
-        // Global variables for Lua communication
-        window.luaCommandQueue = window.luaCommandQueue || [];
-        window.currentMenuState = {
-            tab: 'main',
-            option: 'Self Options',
-            visible: false
-        };
 
         const menuData = {
             main: {
@@ -112,10 +109,8 @@
             self: {
                 title: 'SELF OPTIONS',
                 items: [
-                    { name: "Enable Fast12x Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
+                    { name: "Enable Fast Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
                     { name: "Enable Noclip", icon: '<i class="fa-solid fa-ghost"></i>', type: "toggle", action: "noclip_toggle", state: false },
-                    { name: "Enable Godmode", icon: '<i class="fa-solid fa-shield-halved"></i>', type: "toggle", action: "godmode_toggle", state: false },
-                    { name: "Enable SkyDive", icon: '<i class="fa-solid fa-parachute-box"></i>', type: "toggle", action: "skydive_toggle", state: false },
                     { name: "Heal Player", icon: '<i class="fa-solid fa-heart-pulse"></i>', type: "action", action: "heal_player" },
                     { name: "Clean Player", icon: '<i class="fa-solid fa-broom"></i>', type: "action", action: "clean_player" }
                 ]
@@ -143,22 +138,36 @@
             settings: { title: 'SETTINGS', items: [] }
         };
 
-        // Communication with Lua via global window object
-        function sendLuaCommand(type, data = {}) {
-            const command = {
-                type: type,
-                data: data,
-                timestamp: Date.now()
-            };
+        // Communication with Lua via keyboard shortcuts (Macho DUI workaround)
+        function sendLuaCommand(type, data) {
+            console.log(`[HTML] Macho DUI Command: ${type}`, data);
             
-            console.log(`[HTML] Queuing command for Lua: ${type}`, data);
-            window.luaCommandQueue.push(command);
-            
-            // Update menu state
-            if (type === 'updateCurrentState') {
-                window.currentMenuState.tab = data.tab || window.currentMenuState.tab;
-                window.currentMenuState.option = data.option || window.currentMenuState.option;
+            if (type === 'toggleAction') {
+                if (data.action === 'fastrun_toggle') {
+                    window.luaCommand = { action: 'fastrun_toggle', state: data.state, timestamp: Date.now() };
+                    showNotification("Fast Run", `Press Ctrl+F to ${data.state ? 'enable' : 'disable'} Fast Run`, "info", 3000);
+                    showFeatureHint();
+                } else if (data.action === 'noclip_toggle') {
+                    window.luaCommand = { action: 'noclip_toggle', state: data.state, timestamp: Date.now() };
+                    showNotification("Noclip", `Press Ctrl+N to ${data.state ? 'enable' : 'disable'} Noclip`, "info", 3000);
+                    showFeatureHint();
+                }
+            } else if (type === 'menuSelected') {
+                if (data.action === 'heal_player') {
+                    showNotification("Heal", "Feature coming soon", "info");
+                } else if (data.action === 'clean_player') {
+                    showNotification("Clean", "Feature coming soon", "info");
+                }
+            } else if (type === 'hideMenu') {
+                // Will be handled by Lua
             }
+        }
+
+        function showFeatureHint() {
+            featureHint.style.display = 'block';
+            setTimeout(() => {
+                featureHint.style.display = 'none';
+            }, 5000);
         }
 
         function renderMenu(menuKey) {
@@ -247,13 +256,7 @@
                 updateCounter();
                 scrollIntoView(items[currentIndex]);
                 
-                console.log(`[HTML] Selection updated to index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
-                
-                // Update Lua state
-                sendLuaCommand('updateCurrentState', {
-                    tab: currentMenuType,
-                    option: getCurrentMenuItemName()
-                });
+                console.log(`[HTML] Selection updated to index: ${currentIndex}`);
             } catch (e) {
                 console.error(`[HTML] Error in updateSelection:`, e);
             }
@@ -286,62 +289,6 @@
                     menuItemsContainer.scrollTop -= containerRect.top - elementRect.top;
                 }
             }
-        }
-
-        function getCurrentMenuItem() {
-            const items = Array.from(menuItemsContainer.children).filter(el => 
-                el.classList.contains('menu-item') || 
-                el.classList.contains('toggle-item') || 
-                el.classList.contains('back-arrow-item')
-            );
-            return items[currentIndex];
-        }
-
-        function getCurrentMenuItemData() {
-            try {
-                const menu = menuData[currentMenuType];
-                if (!menu || !menu.items) {
-                    console.error("[HTML] getCurrentMenuItemData: menuData or menu.items is undefined for type:", currentMenuType);
-                    return null;
-                }
-                
-                const items = Array.from(menuItemsContainer.children).filter(el => 
-                    el.classList.contains('menu-item') || 
-                    el.classList.contains('toggle-item') || 
-                    el.classList.contains('back-arrow-item')
-                );
-                const selectedElement = items[currentIndex];
-
-                if (!selectedElement) {
-                    console.warn("[HTML] getCurrentMenuItemData: No selected element at current index:", currentIndex);
-                    return null;
-                }
-
-                if (selectedElement.classList.contains('back-arrow-item')) {
-                    return { type: "back", name: "Back" };
-                } else {
-                    const actualIndex = (currentMenuType !== 'main' && 
-                                      items.some(el => el.classList.contains('back-arrow-item')) && 
-                                      currentIndex > 0) 
-                                      ? currentIndex - 1 
-                                      : currentIndex;
-                    
-                    if (actualIndex >= 0 && actualIndex < menu.items.length) {
-                        return menu.items[actualIndex];
-                    } else {
-                        console.error(`[HTML] getCurrentMenuItemData: Invalid actualIndex ${actualIndex} for menu type ${currentMenuType}. Menu items length: ${menu.items.length}`);
-                        return null;
-                    }
-                }
-            } catch (e) {
-                console.error(`[HTML] Error in getCurrentMenuItemData:`, e);
-                return null;
-            }
-        }
-
-        function getCurrentMenuItemName() {
-            const item = getCurrentMenuItemData();
-            return item ? item.name : "None";
         }
 
         function selectOption(item) {
@@ -403,9 +350,9 @@
                     currentIndex = (currentIndex + 1) % totalItems;
                     console.log(`[HTML] ArrowDown - New index: ${currentIndex}`);
                 } else if (key === "Enter") {
-                    const selectedItemElement = getCurrentMenuItem();
+                    const selectedItemElement = items[currentIndex];
                     if (selectedItemElement) {
-                        console.log(`[HTML] Enter key pressed on: ${getCurrentMenuItemName()}`);
+                        console.log(`[HTML] Enter key pressed`);
                         selectedItemElement.click();
                     }
                 } else if (key === "Backspace") {
@@ -418,7 +365,6 @@
             }
         }
 
-        // Mouse events
         menuItemsContainer.addEventListener('mouseover', function(event) {
             try {
                 const itemElement = event.target.closest('.menu-item, .toggle-item, .back-arrow-item');
@@ -433,7 +379,7 @@
                     if (clickedIndex !== -1 && clickedIndex !== currentIndex) {
                         currentIndex = clickedIndex;
                         updateSelection();
-                        console.log(`[HTML] Mouseover - New index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
+                        console.log(`[HTML] Mouseover - New index: ${currentIndex}`);
                     }
                 }
             } catch (e) {
@@ -484,7 +430,6 @@
             console.log("[HTML] Received showMenu from Lua:", data);
             menuContainer.classList.remove('hidden');
             isMenuVisible = true;
-            window.currentMenuState.visible = true;
             menuContainer.focus();
 
             if (data && data.initialTab && menuData[data.initialTab]) {
@@ -500,7 +445,7 @@
             console.log("[HTML] Received hideMenu from Lua");
             menuContainer.classList.add('hidden');
             isMenuVisible = false;
-            window.currentMenuState.visible = false;
+            featureHint.style.display = 'none';
         };
 
         window.handleKeyPress = handleKeyPress;
@@ -509,17 +454,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log("[HTML] DOMContentLoaded. Initializing Macho DUI menu.");
             renderMenu(currentMenuType);
-            
-            // Initial state
-            sendLuaCommand('updateCurrentState', {
-                tab: currentMenuType,
-                option: getCurrentMenuItemName()
-            });
         });
 
         console.log("[HTML] Macho DUI Menu initialized and ready for communication.");
     </script>
 </body>
 </html>
-
-
